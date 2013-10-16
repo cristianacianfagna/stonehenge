@@ -27,9 +27,14 @@ cava* cerca_cava(int cava_x, int cava_y, cava *testa){
 	ret=NULL;
 	
 	for (p=testa; p != NULL; p=p->next) {
+		printf("fuori if\n");
+		printf("Cava x:%d y:%d\n", p->x, p->y);
 		if (p->x == cava_x & p->y==cava_y) {
+			printf("dentro if");
 			//ret=testa;
 			p = NULL;
+			printf("Cava x:%d y:%d\n", p->x, p->y);
+			printf("Cava testa: %p\n", testa);
 			return testa;	
 		}
 		else
