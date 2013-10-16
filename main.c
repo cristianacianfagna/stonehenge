@@ -27,21 +27,13 @@ cava* cerca_cava(int cava_x, int cava_y, cava *testa){
 	ret=NULL;
 	
 	for (p=testa; p != NULL; p=p->next) {
-		printf("fuori if\n");
-		printf("Cava x:%d y:%d\n", p->x, p->y);
 		if (p->x == cava_x & p->y==cava_y) {
-			printf("dentro if");
-			//ret=testa;
-			p = NULL;
-			printf("Cava x:%d y:%d\n", p->x, p->y);
-			printf("Cava testa: %p\n", testa);
-			return testa;	
-		}
-		else
-			return ret;	
+			ret=testa;
+		}	
+			
 			
 	}
-	//return ret;	
+	return ret;
 		
 }
 
@@ -296,12 +288,13 @@ int main( void ) {
 	temp->block=nuovo_blocco(coordinate_b[0], coordinate_b[1], coordinate_b[2], coordinate_b[3], coordinate_b[4], coordinate_b[5], coordinate_b[6], territorio);
 	printList_B(territorio, coordinate_b[0], coordinate_b[1]);
 	printList_B(territorio, 7, 6);
-	
+	printList_C(territorio);
 	a=0;
 	b=0;
 	printf("Inserisci una cava da cercare\n");
 	scanf("%d %d", &a, &b);
 	trovato=cerca_cava(a, b, territorio);
+	
 	if (trovato != NULL)
 		printf("Cava trovata");
 	else
