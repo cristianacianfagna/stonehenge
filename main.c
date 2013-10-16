@@ -25,16 +25,19 @@ typedef struct cava cava;
 cava* cerca_cava(int cava_x, int cava_y, cava *testa){
 	cava *p,*ret;
 	ret=NULL;
-	//ret=malloc(sizeof(cava *));
 	
 	for (p=testa; p != NULL; p=p->next) {
-		printf ("ciao\n");
 		if (p->x == cava_x & p->y==cava_y) {
-			ret=testa;
-			p = NULL;	
-		}			
+			//ret=testa;
+			p = NULL;
+			return testa;	
+		}
+		else
+			return ret;	
+			
 	}
-	return ret;	
+	//return ret;	
+		
 }
 
 //inserimento in testa del blocco
@@ -226,10 +229,14 @@ int main( void ) {
 	int *coordinate;
 	int *coordinate_b;
 	cava *territorio;
-	territorio=NULL;
+	cava *trovato;
 	cava *temp;
+	trovato=NULL;
+	territorio=NULL;
+	
 
 	temp=malloc(sizeof(cava));
+	trovato=malloc(sizeof(cava));
 	i=0;
 	printf("Inserisci le coordinate x e y delle cave terminate con lo 0\n");
 	
@@ -287,9 +294,13 @@ int main( void ) {
 	
 	a=0;
 	b=0;
-	/*printf("Inserisci una cava da cercare\n");
+	printf("Inserisci una cava da cercare\n");
 	scanf("%d %d", &a, &b);
-	territorio=cerca_cava(a, b, territorio);*/
+	trovato=cerca_cava(a, b, territorio);
+	if (trovato != NULL)
+		printf("Cava trovata");
+	else
+		printf("Cava non trovata");
 	
 
 	
