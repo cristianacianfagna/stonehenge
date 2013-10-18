@@ -54,11 +54,11 @@ blocco* insert_blocco(int dim_x, int dim_y, int dim_z, int pos_x0, int pos_y0, b
 	nuovo_el -> y = dim_y;
 	nuovo_el -> z = dim_z;
 	nuovo_el -> next=primo_blocco;
-	printf("inserisco il blocco\n");
-	printf ("il puntatore al blocco è %p\n", nuovo_el->next);
+	//printf("inserisco il blocco\n");
+	//printf ("il puntatore al blocco è %p\n", nuovo_el->next);
 	//printf ("Il nuovo blocco è in posizione: \n nuovo_el->x0:%d - nuovo_el->y0: %d\n", nuovo_el->x0, nuovo_el->y0);
 	//printf ("Le dimensioni sono: \n nuovo_el->x:%d - nuovo_el->y: %d - nuovo_el->z: %d\n", nuovo_el->x, nuovo_el->y, nuovo_el->z);
-	printf ("Punta a : nuovo_el: %p \n", nuovo_el);
+	//printf ("Punta a : nuovo_el: %p \n", nuovo_el);
 	//primo_blocco->next = nuovo_el;
 	return nuovo_el;
 }
@@ -109,9 +109,9 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 					//printf ("Le coordinate della cava sono: \n c->x:%d - c->y: %d\n", c->x, c->y);
 					//printf ("Il campo blocco della cava punta a %p\n", c->block);
 					//inserisco il blocco in testa
-					printf ("Il campo blocco, prima della insert, della cava punta a %p\n", c->block);
+					//printf ("Il campo blocco, prima della insert, della cava punta a %p\n", c->block);
 					c->block=insert_blocco(dim_x, dim_y, dim_z, pos_x0, pos_y0, c->block);
-					printf ("Il campo blocco della cava punta a %p\n", c->block);
+					//printf ("Il campo blocco della cava punta a %p\n", c->block);
 					ret=c->block;
 					//printf ("Il valore di ritorno  punta a %p\n", ret);
 				}	
@@ -223,6 +223,28 @@ cava* cava_esaurita(int a, int b, cava *t){
 	return t;
 }
 
+
+void percorrenza_minima (cava *territorio) {
+	cava *t;
+	int y_min, y_max, i;
+	i=0;
+	if (territorio != NULL) {
+		y_max=territorio->y;
+		y_min=territorio->y;
+	}
+	
+	//scorro il territorio per trovare la y minima e la y massima
+	for (t=territorio; t != NULL; t=t->next){
+		if (t->y < y_min)
+			y_min=t->y;
+		if (t->y >y_max)
+			y_max=t->y;
+	}
+	printf("min:%d max:%d\n", y_min, y_max);
+	
+	
+}
+
 int main( void ) { 
 	int i, length, a, b;
 	int *coordinate;
@@ -266,6 +288,9 @@ int main( void ) {
 	printf("\n");
 	printList_C(territorio);
 	
+	
+	percorrenza_minima(territorio);
+	
 	territorio=cava_esaurita(4,5,territorio);
 	printf("Eliminata la cava 4 - 5\n");
 	printList_C(territorio);
@@ -303,6 +328,8 @@ int main( void ) {
 		printf("Cava non trovata\n");
 	
 	printList_C(trovato);
+	
+	
 	
 
 	
