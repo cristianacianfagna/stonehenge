@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <math.h>
+#include <limits.h>
 
 //struttura di tipo blocco
 typedef struct blocco {
@@ -177,7 +179,7 @@ cava* nuova_cava(int cava_x, int cava_y, cava *t){
 	int esiste=0;
 	//scorro la lista per vedere se esiste già una cava con coordinata x=a con quelle coordinate
 	for (p=t; p != NULL; p=p->next) {
-		printf("%d", p->x);
+		//printf("%d", p->x);
 		//se esiste la sostituisco 
 		if ((p->x) == cava_x) {
 			(p->y) = cava_y;
@@ -223,26 +225,101 @@ cava* cava_esaurita(int a, int b, cava *t){
 	return t;
 }
 
-
+//per ora non restituisco nulla
 void percorrenza_minima (cava *territorio) {
 	cava *t;
-	int y_min, y_max, i;
+	int y_min, y_max, i, somma, p_totale, j, y_minima;
 	i=0;
+	somma=0;
 	if (territorio != NULL) {
 		y_max=territorio->y;
 		y_min=territorio->y;
 	}
-	
-	//scorro il territorio per trovare la y minima e la y massima
+	//scorro il territorio per trovare la y minima e la y massima...RIFARLO MEMORIZZANDOLA IN FASE DI INSERIMENTO DELLE CAVE
 	for (t=territorio; t != NULL; t=t->next){
 		if (t->y < y_min)
 			y_min=t->y;
 		if (t->y >y_max)
 			y_max=t->y;
 	}
-	printf("min:%d max:%d\n", y_min, y_max);
+	//printf("min:%d max:%d\n", y_min, y_max);
+	//printf("p_totale:%d\n", p_totale);
 	
+	for (j=y_min; j<=y_max; j++){
+		printf("ciclo su %d\n", j);
+		somma=0;
+		//scorro il territorio per sottrarre alle yi le y trovate
+		for (t=territorio; t != NULL; t=t->next){
+			somma=somma+abs((t->y - j));
+			//printf("somma:%d\n", somma);
+		}
+		//al primo giro imposto un valore di percorrenza totale per fare poi i confronti
+		if (j==y_min)
+			p_totale=somma;
+		//printf("sommatoria vale %d con j:%d\n", somma, j);
+		if (somma<p_totale) {
+			p_totale=somma;
+			y_minima=j;
+		}			
+	}
+	printf("La percorrenza totale minina è %d\n", p_totale);
+	printf("La y che corrisponde alla percorrenza minina è %d\n", y_minima);
+	printf("\n");
+}
+
+
+//per ora non restituisco nulla
+void siti_cerimoniali (cava *territorio) {
+	cava *attuale, *successivo, *t;
+	int x_a, y_a, x_b, y_b, min, uno, due, lunghezza, lunghezza_minima;
+	uno=0;
+	due=0;
+	min=0;
 	
+	//devo settare la lunghezza minina a un valore	
+	lunghezza_minima=INT_MAX;
+	//printf("lunghezza minina INT:%d\n", lunghezza_minima);
+	//scorro le cave per impostare le x_a, y_a, ...
+	for (attuale=territorio, successivo=territorio->next; attuale != NULL; successivo=successivo->next) {
+		x_a=attuale->x;
+		y_a=attuale->y;
+		x_b=successivo->x;
+		y_b=successivo->y;
+		lunghezza=0;
+		//printf("x_a:%d, y_a=%d, x_b:%d, y_b:%d\n", x_a, y_a, x_b, y_b );
+		//scorro il territorio per fare la differenza
+		for (t=territorio; t != NULL; t=t->next){
+			//calcolo il minimo valore assoluto 
+			//printf("t-x:%d, x_a:%d\n", t->x, x_a);
+			uno=abs(t->x - x_a);
+			//printf("t-x:%d, x_b:%d\n", t->x, x_b);
+			due=abs(t->x - x_b);
+			//printf("uno:%d, due:%d\n", uno, due);
+			//usare operatore unario col ?
+			if (uno<due)
+				min=uno;
+			else
+				min=due;
+			//printf("min:%d\n", min);		
+			lunghezza=lunghezza+min;
+			//printf("lunghezza:%d\n", lunghezza);
+		}
+		//printf("lunghezza:%d\n", lunghezza);
+		
+		//se ne trovo uno inferiore	
+		if (lunghezza<lunghezza_minima)
+			lunghezza_minima=lunghezza;
+		//se ho confrontato la prima cava con tutte le altre, e quindi sono alla fine	
+		//printf("lunghezza:%d\n", lunghezza);
+		//printf("lunghezza minina:%d\n", lunghezza_minima);
+		if (successivo->next == NULL) {
+			//passo al confronto della seconda cava (attuale=attuale->next) con tutte le altre (risetto successivo=territorio)
+			attuale=attuale->next;
+			successivo=territorio;
+		}
+	}
+	printf("La minima somma totale delle lunghezze è %d\n", lunghezza_minima);
+
 }
 
 int main( void ) { 
@@ -287,9 +364,10 @@ int main( void ) {
 	
 	printf("\n");
 	printList_C(territorio);
-	
+	printf("\n");
 	
 	percorrenza_minima(territorio);
+	siti_cerimoniali(territorio);
 	
 	territorio=cava_esaurita(4,5,territorio);
 	printf("Eliminata la cava 4 - 5\n");
