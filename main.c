@@ -6,7 +6,7 @@
 
 //struttura di tipo blocco
 typedef struct blocco {
-	int x0, y0; /* valore dell’elemento: coordinate del blocco */
+	int x0, y0; /* valore dell���elemento: coordinate del blocco */
 	int x,y,z; /*dimensioni del blocco*/
 	struct blocco *next; /*puntatore al blocco successivo */
 };
@@ -15,8 +15,8 @@ typedef struct blocco blocco;
 
 //struttura di tipo cava determinata da due interi, un puntatore ai blocchi contenuti e un puntatore alla cava successiva
 typedef struct cava {
-	int x, y; /* valore dell’elemento: coordinate della cava */
-	int sito; /* 1 se la cava è un sito, altrimenti 0*/
+	int x, y; /* valore dell���elemento: coordinate della cava */
+	int sito; /* 1 se la cava �� un sito, altrimenti 0*/
 	struct blocco *block; /* indirizzo del primo blocco nella cava */
 	struct cava *next; /* puntatore al prossimo elemento cava */
 };
@@ -44,7 +44,7 @@ blocco* insert_blocco(int dim_x, int dim_y, int dim_z, int pos_x0, int pos_y0, b
 	//ret=insert_blocco(dim_x, dim_y, dim_z, pos_x0, pos_y0, c->block);
 	/*dim_x, dim_y, dim_z sono le dimensioni del blocco */
 	/* pos_x0, pos_y0 indicano le coordinate della posizione del blocco*/
-	/* *primo_blocco è il puntatore al primo blocco*/
+	/* *primo_blocco �� il puntatore al primo blocco*/
 	/*ritorna la nuova testa della lista di blocchi (quindi il puntatore al primo blocco)*/
 	blocco *nuovo_el;
 	//printf ("Il campo blocco della cava punta a %p\n", primo_blocco->next);
@@ -56,19 +56,14 @@ blocco* insert_blocco(int dim_x, int dim_y, int dim_z, int pos_x0, int pos_y0, b
 	nuovo_el -> y = dim_y;
 	nuovo_el -> z = dim_z;
 	nuovo_el -> next=primo_blocco;
-	//printf("inserisco il blocco\n");
-	//printf ("il puntatore al blocco è %p\n", nuovo_el->next);
-	//printf ("Il nuovo blocco è in posizione: \n nuovo_el->x0:%d - nuovo_el->y0: %d\n", nuovo_el->x0, nuovo_el->y0);
-	//printf ("Le dimensioni sono: \n nuovo_el->x:%d - nuovo_el->y: %d - nuovo_el->z: %d\n", nuovo_el->x, nuovo_el->y, nuovo_el->z);
-	//printf ("Punta a : nuovo_el: %p \n", nuovo_el);
-	//primo_blocco->next = nuovo_el;
+
 	return nuovo_el;
 }
 
 //cerca il blocco in una cava
 int cerca_blocco(int pos_x0, int pos_y0, blocco *primo_blocco){
 	/* pos_x0, pos_y0 indicano le coordinate della posizione del blocco*/
-	/* *primo_blocco è il puntatore al primo blocco*/
+	/* *primo_blocco �� il puntatore al primo blocco*/
 	/* ritorna la nuova testa della lista di blocchi */
 	blocco *p;
 	int trovato=0;
@@ -84,12 +79,12 @@ int cerca_blocco(int pos_x0, int pos_y0, blocco *primo_blocco){
 	return trovato;
 }
 
-//inserimento del blocco nella prima cava (poi dovrò farlo in un sito!!!!!!!!!!!!!!!)
+//inserimento del blocco nella prima cava (poi dovr�� farlo in un sito!!!!!!!!!!!!!!!)
 blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, int pos_x0, int pos_y0, cava *testa) {
 	/* cava_x, int cava_y sono le coordinate della cava nel quale va inserito il blocco */
 	/* int dim_x, int dim_y, int dim_z sono le dimensioni del blocco */
 	/* int pos_x0, int pos_y0 sono le coordinate della posizione in cui inserire il blocco */
-	/* *testa è il puntatore alla lista di cave */
+	/* *testa �� il puntatore alla lista di cave */
 	/* restituisco la testa della lista di blocchi o NULL se non faccio nulla */
 	cava *c;
 	blocco *ret;
@@ -101,12 +96,12 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 	for (c=testa; c != NULL; c=c->next) {
 		//se trovo la cava passata in argomento
 		if (c->x == cava_x & c->y == cava_y) {
-			//e se è un sito...ricordarsi poi di mettere l'if a 1!!
+			//e se �� un sito...ricordarsi poi di mettere l'if a 1!!
 			if (c->sito==0) {
 			
-				//cerco il blocco per vedere se esiste già
+				//cerco il blocco per vedere se esiste gi��
 				found=cerca_blocco(pos_x0, pos_y0, c->block);
-				//se il blocco non c'è
+				//se il blocco non c'��
 				if (found==0){
 					//printf ("Le coordinate della cava sono: \n c->x:%d - c->y: %d\n", c->x, c->y);
 					//printf ("Il campo blocco della cava punta a %p\n", c->block);
@@ -120,7 +115,7 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 			}
 		}					
 	}
-	//printf ("Il nuovo blocco è in posizione: \n ret->x0:%d - ret->y0: %d\n", ret->x0, ret->y0);
+	//printf ("Il nuovo blocco �� in posizione: \n ret->x0:%d - ret->y0: %d\n", ret->x0, ret->y0);
 	//printf ("Le dimensioni sono: \n ret->x:%d - ret->y: %d - ret->z: %d\n", ret->x, ret->y, ret->z);
 	//printf ("Punta a : ret->next %p \n", ret->next);
 	return ret;	
@@ -132,7 +127,7 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 //inserimento in testa della cava
 cava* insert_cava(int cava_x, int cava_y, cava *testa) {
 	/*cava_x e cava_b sono le coordinate x e y della cava; */
-	/* testa è il territorio (puntatore alla testa della lista)*/
+	/* testa �� il territorio (puntatore alla testa della lista)*/
 	/*ritorna la nuova testa della lista*/
 	cava *nuovo_el;
 	nuovo_el=malloc(sizeof(cava));
@@ -162,11 +157,11 @@ void printList_B(cava *testa, int a, int b){
 	printf("\n");
 }
 
-//stampa la lista partendo dalla cava (in realtà dal sito) che passo
+//stampa la lista partendo dalla cava (in realt�� dal sito) che passo
 void printList_C(cava *testa){
 	cava *p;
 	p=testa;
-	printf("Il territorio è composto dalle cave seguenti:\n");
+	printf("Il territorio �� composto dalle cave seguenti:\n");
 	for (p=testa; p != NULL; p = p->next){
 		printf(" %d %d\n", p->x, p->y );
 	}
@@ -177,7 +172,7 @@ void printList_C(cava *testa){
 cava* nuova_cava(int cava_x, int cava_y, cava *t){
 	cava *p;
 	int esiste=0;
-	//scorro la lista per vedere se esiste già una cava con coordinata x=a con quelle coordinate
+	//scorro la lista per vedere se esiste gi�� una cava con coordinata x=a con quelle coordinate
 	for (p=t; p != NULL; p=p->next) {
 		//printf("%d", p->x);
 		//se esiste la sostituisco 
@@ -197,18 +192,18 @@ cava* nuova_cava(int cava_x, int cava_y, cava *t){
 //elimina dal territorio la cava indicata
 cava* cava_esaurita(int a, int b, cava *t){
 	/* int a, int b sono le coordinate della cava da eliminare*/
-	/* *t è il territorio*/
+	/* *t �� il territorio*/
 	/* restituisce il territorio*/
 	cava* precedente;
 	cava* attuale;
 	precedente=NULL;
 	attuale=t;
-	/*scorro il territorio con 2 puntatori perchè se trovo la cava, una volta eliminata, devo collegare la cava precedente
+	/*scorro il territorio con 2 puntatori perch�� se trovo la cava, una volta eliminata, devo collegare la cava precedente
 	a quella successiva a quella eliminata*/
 	for (attuale=t; attuale != NULL; attuale=attuale->next){
 		//se trovo la cava
 		if (((attuale->x) == a) & ((attuale->y) == b)) {
-			//se è la prima
+			//se �� la prima
 			if (precedente==NULL) {
 				//punto la testa del territorio al successivo
 				t=attuale->next;
@@ -246,7 +241,7 @@ void percorrenza_minima (cava *territorio) {
 	//printf("p_totale:%d\n", p_totale);
 	
 	for (j=y_min; j<=y_max; j++){
-		printf("ciclo su %d\n", j);
+
 		somma=0;
 		//scorro il territorio per sottrarre alle yi le y trovate
 		for (t=territorio; t != NULL; t=t->next){
@@ -262,63 +257,77 @@ void percorrenza_minima (cava *territorio) {
 			y_minima=j;
 		}			
 	}
-	printf("La percorrenza totale minina è %d\n", p_totale);
-	printf("La y che corrisponde alla percorrenza minina è %d\n", y_minima);
+	printf("La percorrenza totale minina e' %d\n", p_totale);
+	printf("La y che corrisponde alla percorrenza minina e' %d\n", y_minima);
 	printf("\n");
 }
 
 
 //per ora non restituisco nulla
 void siti_cerimoniali (cava *territorio) {
+	/* *territorio è il territorio che passo alla funzione*/
+	/* devo restituire la posizione dei siti*/
 	cava *attuale, *successivo, *t;
-	int x_a, y_a, x_b, y_b, min, uno, due, lunghezza, lunghezza_minima;
+	cava *sito1, *sito2;
+	//coordinate dei siti che troveremo
+	int x_a, y_a, x_b, y_b, x_a_def, x_b_def, y_a_def, y_b_def;
+	int min, uno, due, lunghezza, lunghezza_minima;
 	uno=0;
 	due=0;
 	min=0;
-	
+	x_a_def=0;
+	x_b_def=0;
+	y_a_def=0;
+	y_b_def=0;
 	//devo settare la lunghezza minina a un valore	
 	lunghezza_minima=INT_MAX;
-	//printf("lunghezza minina INT:%d\n", lunghezza_minima);
-	//scorro le cave per impostare le x_a, y_a, ...
+
+	//scorro le cave
 	for (attuale=territorio, successivo=territorio->next; attuale != NULL; successivo=successivo->next) {
+		//e inizio con ipotizzare che il sito sia la prima cava
 		x_a=attuale->x;
 		y_a=attuale->y;
 		x_b=successivo->x;
 		y_b=successivo->y;
 		lunghezza=0;
-		//printf("x_a:%d, y_a=%d, x_b:%d, y_b:%d\n", x_a, y_a, x_b, y_b );
 		//scorro il territorio per fare la differenza
 		for (t=territorio; t != NULL; t=t->next){
-			//calcolo il minimo valore assoluto 
-			//printf("t-x:%d, x_a:%d\n", t->x, x_a);
-			uno=abs(t->x - x_a);
-			//printf("t-x:%d, x_b:%d\n", t->x, x_b);
-			due=abs(t->x - x_b);
-			//printf("uno:%d, due:%d\n", uno, due);
-			//usare operatore unario col ?
-			if (uno<due)
-				min=uno;
-			else
-				min=due;
-			//printf("min:%d\n", min);		
-			lunghezza=lunghezza+min;
-			//printf("lunghezza:%d\n", lunghezza);
+
+				//calcolo il minimo valore assoluto
+				uno=abs(t->x - x_a);
+				due=abs(t->x - x_b);
+				//memorizzo il valore minimo
+				min=(uno<due)?uno:due;
+
+				lunghezza=lunghezza+min;
+
 		}
-		//printf("lunghezza:%d\n", lunghezza);
 		
+
 		//se ne trovo uno inferiore	
-		if (lunghezza<lunghezza_minima)
+		if (lunghezza<lunghezza_minima) {
 			lunghezza_minima=lunghezza;
+			x_a_def=x_a;
+			x_b_def=x_b;
+			y_a_def=y_a;
+			y_b_def=y_b;
+			sito1=attuale;
+			sito2=successivo;
+
+		}
+
 		//se ho confrontato la prima cava con tutte le altre, e quindi sono alla fine	
-		//printf("lunghezza:%d\n", lunghezza);
-		//printf("lunghezza minina:%d\n", lunghezza_minima);
 		if (successivo->next == NULL) {
 			//passo al confronto della seconda cava (attuale=attuale->next) con tutte le altre (risetto successivo=territorio)
+			successivo=attuale;
 			attuale=attuale->next;
-			successivo=territorio;
 		}
 	}
+	sito1->sito=1;
+	sito2->sito=1;
 	printf("La minima somma totale delle lunghezze è %d\n", lunghezza_minima);
+	printf("Le coordinate dei due siti sono: x_a:%d, y_a:%d,  x_b:%d, y_b:%d, \n", x_a_def, y_a_def, x_b_def, y_b_def);
+	printf("Il campo sito della cava %d è %d\n", sito1->x, sito1->sito);
 
 }
 
@@ -357,23 +366,23 @@ int main( void ) {
 	
 
 	
-	//i+=2 perchè mi sposto di due alla volta (coppia di coordinate)
+	//i+=2 perch�� mi sposto di due alla volta (coppia di coordinate)
 	for(i=0; i<length; i+=2){
 		territorio=nuova_cava(coordinate[i], coordinate[i+1], territorio);
 	}
 	
 	printf("\n");
-	printList_C(territorio);
+	//printList_C(territorio);
 	printf("\n");
 	
-	percorrenza_minima(territorio);
+	//percorrenza_minima(territorio);
 	siti_cerimoniali(territorio);
 	
-	territorio=cava_esaurita(4,5,territorio);
-	printf("Eliminata la cava 4 - 5\n");
-	printList_C(territorio);
+	//territorio=cava_esaurita(4,5,territorio);
+	//printf("Eliminata la cava 4 - 5\n");
+	//printList_C(territorio);
 	
-	printf("Inserisci un blocco in una cava. Specifica posizione e dimensione del blocco, e le coordinate della cava terminate da uno zero\n");
+	/*printf("Inserisci un blocco in una cava. Specifica posizione e dimensione del blocco, e le coordinate della cava terminate da uno zero\n");
 	
 	i=0;
 	coordinate_b=malloc(sizeof(int));
@@ -405,9 +414,7 @@ int main( void ) {
 	else
 		printf("Cava non trovata\n");
 	
-	printList_C(trovato);
-	
-	
+	printList_C(trovato);*/
 	
 
 	
