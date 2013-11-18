@@ -18,6 +18,7 @@ typedef struct cava {
 	int x, y; /* valore dell���elemento: coordinate della cava */
 	int sito; /* 1 se la cava �� un sito, altrimenti 0*/
 	struct blocco *block; /* indirizzo del primo blocco nella cava */
+	int *mappa; /* puntatore alla mappa*/
 	struct cava *next; /* puntatore al prossimo elemento cava */
 };
 
@@ -79,7 +80,7 @@ int cerca_blocco(int pos_x0, int pos_y0, blocco *primo_blocco){
 	return trovato;
 }
 
-//inserimento del blocco nella prima cava (poi dovr�� farlo in un sito!!!!!!!!!!!!!!!)
+//inserimento del blocco nella prima cava
 blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, int pos_x0, int pos_y0, cava *testa) {
 	/* cava_x, int cava_y sono le coordinate della cava nel quale va inserito il blocco */
 	/* int dim_x, int dim_y, int dim_z sono le dimensioni del blocco */
@@ -97,7 +98,7 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 		//se trovo la cava passata in argomento
 		if (c->x == cava_x & c->y == cava_y) {
 			//e se �� un sito...ricordarsi poi di mettere l'if a 1!!
-			if (c->sito==0) {
+			if (c->sito==1) {
 			
 				//cerco il blocco per vedere se esiste gi��
 				found=cerca_blocco(pos_x0, pos_y0, c->block);
@@ -110,14 +111,13 @@ blocco* nuovo_blocco(int cava_x, int cava_y, int dim_x, int dim_y, int dim_z, in
 					c->block=insert_blocco(dim_x, dim_y, dim_z, pos_x0, pos_y0, c->block);
 					//printf ("Il campo blocco della cava punta a %p\n", c->block);
 					ret=c->block;
+
 					//printf ("Il valore di ritorno  punta a %p\n", ret);
 				}	
 			}
 		}					
 	}
-	//printf ("Il nuovo blocco �� in posizione: \n ret->x0:%d - ret->y0: %d\n", ret->x0, ret->y0);
-	//printf ("Le dimensioni sono: \n ret->x:%d - ret->y: %d - ret->z: %d\n", ret->x, ret->y, ret->z);
-	//printf ("Punta a : ret->next %p \n", ret->next);
+
 	return ret;	
 	
 }
@@ -140,14 +140,14 @@ cava* insert_cava(int cava_x, int cava_y, cava *testa) {
 }
 
 //stampa la lista dei blocchi della cava che passo 
-void printList_B(cava *testa, int a, int b){
+void printList_B(cava *testa){
 	cava *c;
 	blocco *p;
 	for (c=testa; c!=NULL; c = c->next) {
-		if (c->x == a & c->y==b){
+		if (c->sito == 1 ){
 			printf("I blocchi della cava con coordinate %d %d:\n", c->x, c->y );
 			for (p=c->block; p != NULL; p = p->next){
-				printf ("ciao");
+				//printf ("ciao");
 				printf(" x0:%d y0:%d\n ", p->x0, p->y0 );
 			}
 			
@@ -318,7 +318,7 @@ void siti_cerimoniali (cava *territorio) {
 
 		//se ho confrontato la prima cava con tutte le altre, e quindi sono alla fine	
 		if (successivo->next == NULL) {
-			//passo al confronto della seconda cava (attuale=attuale->next) con tutte le altre (risetto successivo=territorio)
+			//passo al confronto della seconda cava (attuale=attuale->next) con tutte le altre da lì in avanti (risetto successivo=attuale)
 			successivo=attuale;
 			attuale=attuale->next;
 		}
@@ -331,91 +331,302 @@ void siti_cerimoniali (cava *territorio) {
 
 }
 
-int main( void ) { 
-	int i, length, a, b;
+blocco* rotazione(int pos_x0, int pos_y0, cava *territorio, int sito_x, int sito_y, int rotazione) {
+	cava *t;
+	blocco *attuale;
+	blocco *nuovo;
+	int ok=0, dim_x=0, dim_y=0, dim_z=0;
+
+	nuovo=NULL;
+
+	//scorro il territorio per verificare che il sito passato sia presente sul territorio
+	for (t=territorio; t!=NULL; t=t->next){
+		//se la cava esiste
+		if ((t->x==sito_x) & (t->y==sito_y) ){
+			//e se è un sito
+			if (t->sito==1) {
+				//scorro i blocchi per trovare quello corretto
+				for (attuale=t->block; attuale != NULL; attuale=attuale->next){
+					//se trovo il blocco passato alla funzione
+					if ((attuale->x0==pos_x0) & (attuale->y0==pos_y0)) {
+						dim_y=attuale->y;
+						dim_z=attuale->z;
+						dim_x=attuale->x;
+						switch (rotazione){
+						case 0:
+							printf("nord\n");
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z);
+							//ok=verifica_copertura(t, attuale->x0, attuale->x0+attuale->x, pos_y0+dim_y, pos_y0+dim_y+attuale->y);
+							if (ok==1)
+								printf("rotazione non possibile\n");
+							else {
+								attuale->y=dim_z;
+								attuale->z=dim_y;
+								attuale->y0=pos_y0+dim_y;
+								printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z );
+							}
+							break;
+						case 1:
+							printf("est\n");
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z);
+							attuale->x=dim_z;
+							attuale->z=dim_x;
+							attuale->x0=pos_x0+dim_x;
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z );
+							break;
+						case 2:
+							printf("sud\n");
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z);
+							attuale->y=dim_z;
+							attuale->z=dim_y;
+							attuale->y0=pos_y0-dim_z;
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z );
+							break;
+						case 3:
+							printf("ovest\n");
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z);
+							attuale->x=dim_z;
+							attuale->z=dim_x;
+							attuale->x0=pos_x0-dim_z;
+							printf("x0:%d, y0:%d, x:%d, y:%d, z:%d\n", attuale->x0, attuale->y0, attuale->x, attuale->y, attuale->z );
+							break;
+						}
+						//non rientro più nel for
+						nuovo=attuale;
+						attuale=NULL;
+					}
+				}
+			}
+
+		}
+
+	}
+
+	return nuovo;
+}
+/*//funzione che verifica l'occupazione delle celle comprese tra x_max e x_min, e tra y_min e y_max e
+//restituisce 1 se occupata o 0 se libera
+int verifica_copertura(cava *sito, int x_min, int x_max, int y_min, int y_max){
+	int stato=0;
+	blocco *b;
+	b=NULL;
+	//scorro i blocchi
+	for (b=sito->block; b!=NULL; b=b->next){
+		//
+		if ( (((b->y0+b->y)>(y_min) && ((b->y0+b->y)<y_max))) || (b->y0<y_max && b->y0>y_min) ) {
+			if (((b->x0>x_min) && (b->x0<x_max)) || ((b->x0+b->x>x_min) && (b->x0+b->x<=x_max) ))
+				stato=1;
+		}
+
+	}
+
+	return stato;
+}*/
+
+//funziona che crea una mappa (vettore) che evidenzia le posizioni occupate
+void crea_mappa(cava *territorio) {
+	cava *t;
+	blocco *b;
+	blocco *b1;
+	int *mappa;
+	int i, j, pos;
+	int X_MIN=0;
+	int X_MAX=0;
+	int Y_MIN=0;
+	int Y_MAX=0;
+
+	int x_a, x_b, y_a, y_b;
+	//scorro il territorio alla ricerca del sito
+	for (t=territorio; t!=NULL; t=t->next) {
+		if (t->sito==1){
+			//se esistono blocchi nella cava
+			if (t->block != NULL){
+				b1=t->block;
+				X_MIN=b1->x0;
+				X_MAX=b1->x0+b1->x;
+				Y_MIN=b1->y0;
+				Y_MAX=b1->y0+b1->y;
+
+				//scorro i blocchi per trovare le dimensioni minime che serviranno per allocare la mappa
+				for (b=b1->next; b!=NULL; b=b->next){
+					if (b->x0<X_MIN) {
+						X_MIN=b->x0;
+					}
+					if (b->x0+b->x>X_MAX) {
+						X_MAX=b->x0+b->x;
+					}
+					if (b->y0<Y_MIN) {
+						Y_MIN=b->y0;
+					}
+					if (b->y0+b->y>Y_MAX) {
+						Y_MAX=b->y0+b->y;
+					}
+
+				}
+			}
+			printf("X_MIN:%d, X_MAX:%d, Y_MIN:%d, Y_MAX:%d\n", X_MIN, X_MAX, Y_MIN, Y_MAX);
+			mappa=malloc(sizeof(int)*(X_MAX-X_MIN)*(Y_MAX-Y_MIN));
+			//azzero l'array
+			for (i=0; i<((X_MAX-X_MIN)*(Y_MAX-Y_MIN)); i++){
+				mappa[i]=0;
+			}
+			t->mappa=mappa;
+			//riscorro i blocchi per leggere le coordinate e popolare la mappa
+			for (b=t->block; b!=NULL; b=b->next){
+				for (j=0;j<b->y;j++){
+					for (i=0;i<b->x;i++){
+						pos=(((b->y0)+j)-Y_MIN)*(X_MAX-X_MIN)+(((b->x0)+i)-X_MIN);
+						mappa[pos]=1;
+					}
+				}
+			}
+			printf("mappa:\n");
+			/*for (i=0; i<((X_MAX-X_MIN)*(Y_MAX-Y_MIN)); i++){
+				if (i==X_MAX-X_MIN || i==((X_MAX-X_MIN)*2) || i==((X_MAX-X_MIN)*3) || i==((X_MAX-X_MIN)*4) || i==((X_MAX-X_MIN)*5) || i==((X_MAX-X_MIN)*6) || i==((X_MAX-X_MIN)*7)){
+					printf("\n");
+				}
+				printf("%d - ", mappa[i]);
+			}*/
+			for (j=Y_MAX-Y_MIN-1; j>=0; j--){
+				for (i=0; i<=X_MAX-X_MIN-1; i++){
+					pos=((X_MAX-X_MIN)*j)+i;
+					printf("%d - ", mappa[pos]);
+
+				}
+				printf("\n");
+			}
+			printf("\n");
+		}
+
+	}
+
+}
+
+
+int leggi_cave(char *nomefile, cave *territorio ){
 	int *coordinate;
+	int i=0;
+	int length=0;
+	FILE *cave;
+	int result=0;
+
+	coordinate=malloc(sizeof(int));
+
+	cave=fopen(nomefile,"r");
+	if (cave == NULL){
+		printf("Non riesco a leggere il file\n");
+		result=1;
+	}
+	else {
+		while (fscanf(cave, "%d", &coordinate[i])) {
+			if (coordinate[i]==0)
+				break;
+			i++;
+			coordinate=realloc(coordinate, (i+1)*sizeof(int));
+		}
+		fclose(cave);
+		length=i;
+		//creo le cave
+		//i+=2 perche' mi sposto di due alla volta (coppia di coordinate)
+		for(i=0; i<length; i+=2){
+			territorio=nuova_cava(coordinate[i], coordinate[i+1], territorio);
+		}
+	}
+
+	return result;
+}
+
+//fare funzione per passare il file rotazione.txt
+
+int main( int argc, char *argv[]) {
+	int i, length;
+	int file=0;
+
 	int *coordinate_b;
+	int *mappa;
+
+	FILE *blocchi;
 	cava *territorio;
 	cava *trovato;
 	cava *temp;
+	blocco *ruotato;
+
 	trovato=NULL;
 	territorio=NULL;
-	
-
 	temp=malloc(sizeof(cava));
 	trovato=malloc(sizeof(cava));
 	i=0;
-	printf("Inserisci le coordinate x e y delle cave terminate con lo 0\n");
-	
-	coordinate=malloc(sizeof(int));
-	//printf("%d", coordinate);
-	
-	while (scanf("%d", &coordinate[i])) {
-		if (coordinate[i]==0)
-			break;
-		i++;	
-		coordinate=realloc(coordinate, (i+1)*sizeof(int));
+
+	//se argc<2 esci
+	if (argc<2){
+		printf("Non hai passato tutti i file richiesti che devono essere almeno due: uno per le cave e uno per i blocchi\n");
 	}
-	
-	length=i;
-	//printf("numero coordinate lette: %d\n", length);
-	
-	/*for (i=0; i<length; i++){
-		printf("le coordinate nell'array sono:%d\n", coordinate[i]);
-	}*/
-	
+	else {
+
+		//alla funzione leggi cave passerò argcv[1]
+		file=leggi_cave(argv[1], argv[2]);
+		printf("Leggo le coordinate delle cave dal file argv[1]t e creo il territorio\n");
+		//chiamo la funzione
+
+
+
+			printf("\n");
+			printList_C(territorio);
+			printf("\n");
+
+			//percorrenza_minima(territorio);
+			siti_cerimoniali(territorio);
+
+			printf("Leggo le coordinate dei blocchi dal file blocchi.txt\n");
+			//printf("Inserisci un blocco in una cava. Specifica posizione e dimensione del blocco, e le coordinate della cava terminate da uno zero\n");
+			blocchi=fopen("blocchi.txt","r");
+			if (blocchi == NULL)
+				printf("Non riesco a leggere il file con i blocchi\n");
+			else {
+				i=0;
+				coordinate_b=malloc(sizeof(int));
+				while (fscanf(blocchi, "%d", &coordinate_b[i])) {
+					if (coordinate_b[i]==0)
+						break;
+					i++;
+					coordinate_b=realloc(coordinate_b, (i+1)*sizeof(int));
+				}
+				length=0;
+				length=i;
+				printf("numero coordinate lette: %d\n", length);
+			}
+			fclose(blocchi);
+
 
 	
-	//i+=2 perch�� mi sposto di due alla volta (coppia di coordinate)
-	for(i=0; i<length; i+=2){
-		territorio=nuova_cava(coordinate[i], coordinate[i+1], territorio);
-	}
 	
-	printf("\n");
-	//printList_C(territorio);
-	printf("\n");
+			//creo i blocchi
+			for (i=0; i<length; i+=7){
+				territorio->block=nuovo_blocco(coordinate_b[i], coordinate_b[i+1], coordinate_b[i+2], coordinate_b[i+3], coordinate_b[i+4], coordinate_b[i+5], coordinate_b[i+6], territorio);
+			}
 	
-	//percorrenza_minima(territorio);
-	siti_cerimoniali(territorio);
-	
-	//territorio=cava_esaurita(4,5,territorio);
-	//printf("Eliminata la cava 4 - 5\n");
-	//printList_C(territorio);
-	
-	/*printf("Inserisci un blocco in una cava. Specifica posizione e dimensione del blocco, e le coordinate della cava terminate da uno zero\n");
-	
-	i=0;
-	coordinate_b=malloc(sizeof(int));
-	while (scanf("%d", &coordinate_b[i])) {
-		if (coordinate_b[i]==0)
-			break;
-		i++;	
-		coordinate_b=realloc(coordinate_b, (i+1)*sizeof(int));
-	}
-	length=0;
-	length=i;
-	printf("numero coordinate lette: %d\n", length);
-	for (i=0; i<length; i+=7){
-		territorio->block=nuovo_blocco(coordinate_b[i], coordinate_b[i+1], coordinate_b[i+2], coordinate_b[i+3], coordinate_b[i+4], coordinate_b[i+5], coordinate_b[i+6], territorio);
-	}
+			crea_mappa(territorio);
 
-	//territorio->block=nuovo_blocco(coordinate_b[0], coordinate_b[1], coordinate_b[2], coordinate_b[3], coordinate_b[4], coordinate_b[5], coordinate_b[6], territorio);
-	printList_B(territorio, 8,9);
-	//printList_B(territorio, 7, 6);
-	printList_C(territorio);
-	a=0;
-	b=0;
-	printf("Inserisci una cava da cercare\n");
-	scanf("%d %d", &a, &b);
-	trovato=cerca_cava(a, b, territorio);
-	
-	if (trovato != NULL)
-		printf("Cava trovata\n");
-	else
-		printf("Cava non trovata\n");
-	
-	printList_C(trovato);*/
+			//stampo i blocchi
+			printList_B(territorio);
+
+			//ruoto il blocco in posizione 6,7 di dimensione 3,4,5 che si trova nel sito 9,-3 in direzione ovest
+			ruotato=rotazione(6,7,territorio,9,-3, 0);
+
+			/*a=0;
+			b=0;
+			printf("Inserisci una cava da cercare\n");
+			scanf("%d %d", &a, &b);
+			trovato=cerca_cava(a, b, territorio);
+
+			if (trovato != NULL)
+				printf("Cava trovata\n");
+			else
+				printf("Cava non trovata\n");*/
+
 	
 
+		}
+	}
 	
 }
